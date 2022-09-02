@@ -85,7 +85,7 @@ public class Main {
 
 				switch (option()) {
 
-				case "" + 1:
+				case "1":
 					try {
 						dbs.getTripDetails();
 					} catch (Exception e) {
@@ -93,7 +93,7 @@ public class Main {
 					}
 
 					break;
-				case 2 + "":
+				case "2":
 					System.out.print("Enter TripId where you want to go: ");
 					int tripid = sc.nextInt();
 					System.out.print("Enter number of persons: ");
@@ -102,10 +102,10 @@ public class Main {
 					dbs.placeorder(new BookingDetails(tripid, person), username);
 
 					break;
-				case 3 + "":
+				case "3":
 					dbs.getbookingdetails(username);
 					break;
-				case 4 + "":
+				case "4":
 					dbs.getbookingdetails(username);
 					System.out.print("enter the bookingId of you order which you want to delete: ");
 					int id = sc.nextInt();
@@ -116,7 +116,7 @@ public class Main {
 					}
 
 					break;
-				case 5 + "":
+				case "5":
 					System.out.print("enter order id which you want to update:-->");
 
 					int updateid = sc.nextInt();
@@ -131,7 +131,7 @@ public class Main {
 						System.out.println("\t\t !!!!!!!enter proper details!!!!!");
 					}
 					break;
-				case -1 + "":
+				case "-1":
 					boom = false;
 					System.out.println("############ Thanku for using our booking service############");
 					break;
@@ -167,13 +167,13 @@ public class Main {
 			choice = sc.next();
 
 			switch (choice) {
-			case 1 + "":
+			case "1":
 				ArrayList<String> mylist = signIn();
 
 				dbs.insertuser(new User(mylist.get(0), mylist.get(1), mylist.get(2), mylist.get(3), mylist.get(4)));
 
 				break;
-			case 2 + "":
+			case "2":
 				System.out.print("Enter your name: ");
 				String username = sc.next();
 				System.out.print("Enter password: ");
@@ -186,7 +186,7 @@ public class Main {
 				}
 
 				break;
-			case 3 + "":
+			case "3 ":
 				System.out.println("Enter your Username: ");
 				String username1 = sc.next();
 				System.out.println("Enter your old Password: ");
@@ -215,7 +215,7 @@ public class Main {
 //					System.out.println("UserName or Password is Incorrect ");
 //				}
 
-			case -1 + "":
+			case "-1":
 				System.out.println("$$$$$$$ Exited successfully$$$$$$$$");
 				flag = false;
 				break;

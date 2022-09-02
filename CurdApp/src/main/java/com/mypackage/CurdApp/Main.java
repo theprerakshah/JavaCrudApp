@@ -1,10 +1,14 @@
 package com.mypackage.CurdApp;
 
+import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Scanner;
 //import java.util.regex.Pattern;
 
 public class Main {
-	public static DatabaseService dbs = new DatabaseService();
+
+	static Connection con = MyConnector.getConnection();
+	public static DatabaseService dbs = new DatabaseService(con);
 	public static Scanner sc = new Scanner(System.in);
 
 	public static boolean validate(int n) {
@@ -14,11 +18,48 @@ public class Main {
 		return Integer.toString(n).matches(valid);
 	}
 
+	public static ArrayList<String> signIn() {
+		ArrayList<String> mylist = new ArrayList<>();
+		String name = "";
+		String email = "";
+		String contact = "";
+		String password = "";
+		String address = "";
+
+		while (!validation.nameValidate(name)) {
+			System.out.print("Enter name:");
+			name = sc.next();
+		}
+		mylist.add(name);
+		while (!validation.emailValidate(email)) {
+
+			System.out.print("Enter Email");
+			email = sc.next();
+		}
+		mylist.add(email);
+		while (!validation.contactValidate(contact)) {
+			System.out.print("Enter Contact ");
+			contact = sc.next();
+		}
+		mylist.add(contact);
+		System.out.print("Enter Address ");
+		address = sc.next();
+		mylist.add(address);
+		while (!validation.passwordValidate(password)) {
+			System.out.print("Enter Password ");
+			password = sc.next();
+		}
+		mylist.add(password);
+
+		return mylist;
+	}
+
 	public static String option() {
 
 		String choice = "";
 		System.out.println("");
-System.out.println("_______________________________________________________________________________________________________");
+		System.out.println(
+				"_______________________________________________________________________________________________________");
 		System.out.println("\t 1 to show me trip details");
 		System.out.println("\t 2 to Book a Trip");
 		System.out.println("\t 3 to show you order");
@@ -45,8 +86,11 @@ System.out.println("____________________________________________________________
 				switch (option()) {
 
 				case "" + 1:
-
-					dbs.getTripDetails();
+					try {
+						dbs.getTripDetails();
+					} catch (Exception e) {
+						System.out.println("error occured here");
+					}
 
 					break;
 				case 2 + "":
@@ -89,6 +133,7 @@ System.out.println("____________________________________________________________
 					break;
 				case -1 + "":
 					boom = false;
+					System.out.println("############ Thanku for using our booking service############");
 					break;
 
 				default:
@@ -102,13 +147,15 @@ System.out.println("____________________________________________________________
 	}
 
 	public static void main(String[] args) throws Exception {
-		System.out.println("\t \t <----------------welcome to my application--------------->");
 
+		System.out.println("\t \t <----------------welcome to my application--------------->");
+		new DatabaseService(con);
 		String choice = "";
 		boolean flag = true;
 
 		while (flag) {
-			System.out.println("_________________________________________________________________________________________");
+			System.out.println(
+					"_________________________________________________________________________________________");
 			System.out.println("\t enter you choice");
 			System.out.println("\t 1 to SignUp");
 			System.out.println("\t 2 to SignIn");
@@ -121,19 +168,9 @@ System.out.println("____________________________________________________________
 
 			switch (choice) {
 			case 1 + "":
-				System.out.print("Enter name:");
-				String name = sc.next();
+				ArrayList<String> mylist = signIn();
 
-				System.out.print("Enter Email");
-				String email = sc.next();
-				System.out.print("Enter Contact ");
-				String contact = sc.next();
-				System.out.print("Enter Address ");
-				String address = sc.next();
-				System.out.print("Enter Password ");
-				String password = sc.next();
-
-				dbs.insertuser(new User(name, contact, address, email, password));
+				dbs.insertuser(new User(mylist.get(0), mylist.get(1), mylist.get(2), mylist.get(3), mylist.get(4)));
 
 				break;
 			case 2 + "":
@@ -155,8 +192,11 @@ System.out.println("____________________________________________________________
 				System.out.println("Enter your old Password: ");
 				String password1 = sc.next();
 				if (dbs.crosscheck(username1, password1)) {
-					System.out.println("Enter new password:");
-					String pass = sc.next();
+					String pass = "";
+					while (!validation.passwordValidate(pass)) {
+						System.out.println("Enter new password:");
+						pass = sc.next();
+					}
 					dbs.updatepassword(username1, pass);
 				} else {
 					System.out.println("\t\t !!!!!!!!!!!!!!!UserName or Password is Incorrect!!!!!!!!!!!!!!!! ");
@@ -186,5 +226,6 @@ System.out.println("____________________________________________________________
 			}
 		}
 		sc.close();
+		con.close();
 	}
 }

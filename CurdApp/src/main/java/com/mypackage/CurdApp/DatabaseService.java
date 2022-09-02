@@ -4,30 +4,64 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
-public class DatabaseService extends Query {
-	MyConnector connector = new MyConnector();
+public class DatabaseService {
+
+	public static String insertUser = "insert into User (UserName,UserContact,UserAddress,UserEmail,UserPassword)values(?,?,?,?,?)";
+	public static String tripDetails = "SELECT * FROM MakeMyTrip.TripInfo";
+	public static String BookingDetails = "SELECT * FROM MakeMyTrip.BookingDetails";
+	public static String retrive = "select * from User";
+	public static String placeorder = "insert into BookingDetails (BookingDetailsId,TripPlace,BookingDetailsPerson,BookingDetailsPayment,UserName) values(?,?,?,?,?)";
+	public static String deleteorder = "DELETE FROM BookingDetails WHERE BookingDetailsInfo= ?";
+	public static String updateorder = "UPDATE BookingDetails SET BookingDetailsId = ?, BookingDetailsPerson = ?, BookingDetailsPayment=? ,TripPlace=? WHERE BookingDetailsInfo =?";
+	public static String updatepassword = "UPDATE User SET  UserPassword=? WHERE UserName =?";
+
+	public static PreparedStatement preInsertUser = null;
+	public static PreparedStatement preretrive = null;
+	public static PreparedStatement pretripDetails = null;
+	public static PreparedStatement preBookingDetails = null;
+	public static PreparedStatement prePlaceorder = null;
+	public static PreparedStatement predeleteorder = null;
+	public static PreparedStatement preupdateorder = null;
+	public static PreparedStatement preupdatepassword = null;
+
+	DatabaseService(Connection con) {
+		try {
+			preInsertUser = con.prepareStatement(insertUser);
+			preretrive = con.prepareStatement(retrive);
+			pretripDetails = con.prepareStatement(tripDetails);
+			preBookingDetails = con.prepareStatement(BookingDetails);
+			prePlaceorder = con.prepareStatement(placeorder);
+			predeleteorder = con.prepareStatement(deleteorder);
+			preupdateorder = con.prepareStatement(updateorder);
+			preupdatepassword = con.prepareStatement(updatepassword);
+
+		} catch (Exception e) {
+			System.out.println(e + "error in object");
+		}
+	}
 
 	public void insertuser(User user) throws SQLException {
-		try (Connection con = MyConnector.getConnection(); PreparedStatement pre = con.prepareStatement(insertUser);) {
-			pre.setString(1, user.getUserName());
-			pre.setString(2, user.getUserContact());
-			pre.setString(3, user.getUserAddress());
-			pre.setString(4, user.getUserEmail());
-			pre.setString(5, user.getUserPassword());
-			int row = pre.executeUpdate();
+		try {
+			preInsertUser.setString(1, user.getUserName());
+			preInsertUser.setString(2, user.getUserContact());
+			preInsertUser.setString(3, user.getUserAddress());
+			preInsertUser.setString(4, user.getUserEmail());
+			preInsertUser.setString(5, user.getUserPassword());
+			int row = preInsertUser.executeUpdate();
 			if (row > 0) {
 				System.out.println("###########User Added  successfully#############");
 			}
+		} catch (Exception e) {
+			System.out.println(e);
 		}
 
 	}
 
 	public boolean crosscheck(String name, String password) throws SQLException {
 		boolean boom = false;
-		try (Connection con = MyConnector.getConnection(); Statement st = con.createStatement();) {
-			ResultSet rs = st.executeQuery(Query.retrive());
+		try {
+			ResultSet rs = preretrive.executeQuery(retrive);
 			while (rs.next()) {
 
 				if (name.equals(rs.getString("UserName")) && password.equals(rs.getString("UserPassword"))) {
@@ -35,23 +69,26 @@ public class DatabaseService extends Query {
 				}
 
 			}
+		} catch (Exception e) {
+			System.out.println(e);
 		}
 
 		return boom;
 	}
 
 	public void updatepassword(String username, String password) throws SQLException {
-		try (Connection con = MyConnector.getConnection();
-				PreparedStatement pre = con.prepareStatement(Query.updatepassword());) {
+		try {
 
-			pre.setString(1, password);
-			pre.setString(2, username);
+			preupdatepassword.setString(1, password);
+			preupdatepassword.setString(2, username);
 
-			int row = pre.executeUpdate();
+			int row = preupdatepassword.executeUpdate();
 			if (row > 0) {
 				System.out.println("#########your password has been updated successfully########");
 			}
 
+		} catch (Exception e) {
+			System.out.println(e);
 		}
 	}
 
@@ -76,9 +113,9 @@ public class DatabaseService extends Query {
 //	}
 
 	public void getTripDetails() throws SQLException {
-		try (Connection con = MyConnector.getConnection(); Statement st = con.createStatement();) {
+		try {
 
-			ResultSet rs = st.executeQuery(Query.tripDetails());
+			ResultSet rs = pretripDetails.executeQuery();
 			System.out.print("TripId");
 			System.out.print("\t\t TripPlace");
 			System.out.print("\t\t TripDuration");
@@ -90,17 +127,17 @@ public class DatabaseService extends Query {
 				System.out.printf("%-21s ", rs.getString("TripDuration"));
 				System.out.printf("%s \n", rs.getString("TripPrice"));
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
 	public int placeorder(BookingDetails details, String username) throws SQLException {
 		int price = 0;
 		String place = "";
-		try (Connection con = MyConnector.getConnection();
-				PreparedStatement pre = con.prepareStatement(Query.placeorder());
-				Statement st = con.createStatement();) {
+		try {
 
-			ResultSet rs = st.executeQuery(Query.tripDetails());
+			ResultSet rs = pretripDetails.executeQuery();
 			while (rs.next()) {
 //				System.out.println(rs.getString("TripId"));
 				if (Integer.parseInt(rs.getString("TripId")) == details.getBookingDetailsId()) {
@@ -114,24 +151,26 @@ public class DatabaseService extends Query {
 			int total = details.getBookingDetailsPerson();
 			int ftotal = total * price;
 
-			pre.setInt(1, details.getBookingDetailsId());
-			pre.setString(2, place);
-			pre.setInt(3, details.getBookingDetailsPerson());
-			pre.setInt(4, ftotal);
-			pre.setString(5, username);
+			prePlaceorder.setInt(1, details.getBookingDetailsId());
+			prePlaceorder.setString(2, place);
+			prePlaceorder.setInt(3, details.getBookingDetailsPerson());
+			prePlaceorder.setInt(4, ftotal);
+			prePlaceorder.setString(5, username);
 
-			int row = pre.executeUpdate();
+			int row = prePlaceorder.executeUpdate();
 			if (row > 0) {
 				System.out.println("\t \t ######Your Order has been placed Successfully######");
 			}
+		} catch (Exception e) {
+			System.out.println(e);
 		}
 		return 0;
 	}
 
 	public void getbookingdetails(String username) throws SQLException {
-		try (Connection con = MyConnector.getConnection(); Statement st = con.createStatement();) {
+		try {
 
-			ResultSet rs = st.executeQuery(Query.BookingDetails());
+			ResultSet rs = preBookingDetails.executeQuery(BookingDetails);
 
 			System.out.print("BookingId");
 			System.out.print("\t\t PlaceId");
@@ -154,29 +193,30 @@ public class DatabaseService extends Query {
 			if (flag) {
 				System.out.println("\t\t  ##### You have not Booked any trip ####");
 			}
+		} catch (Exception e) {
+			System.out.println(e);
 		}
 	}
 
 	public void deletemyorder(int id) throws SQLException {
 
-		try (Connection con = MyConnector.getConnection();
-				PreparedStatement pre = con.prepareStatement(Query.deleteorder());) {
-			pre.setInt(1, id);
-			int row = pre.executeUpdate();
+		try {
+			predeleteorder.setInt(1, id);
+			int row = predeleteorder.executeUpdate();
 			if (row > 0) {
 				System.out.println("\t \t ####your order is deleted####");
 			} else {
 				System.out.println("\t\t !!!!!no such order!!!!!!");
 			}
 
+		} catch (Exception e) {
+			System.out.println(e);
 		}
 	}
 
 	public void updateOrder(int id, int updatetripid, int updateperson) throws SQLException {
 		int pay = 0;
-		try (Connection con = MyConnector.getConnection();
-				PreparedStatement pre = con.prepareStatement(Query.updateorder());
-				Statement st = con.createStatement();) {
+		try {
 
 //			ResultSet rs = st.executeQuery(Query.BookingDetails());
 //			while (rs.next()) {
@@ -186,29 +226,31 @@ public class DatabaseService extends Query {
 //				}
 //			}
 			String place = "";
-			ResultSet rs = st.executeQuery(Query.tripDetails());
+			ResultSet rs = pretripDetails.executeQuery();
 			while (rs.next()) {
 				if (Integer.parseInt(rs.getString("TripId")) == updatetripid) {
 					pay = Integer.parseInt(rs.getString("TripPrice"));
 					place = rs.getString("TripPlace");
-					System.out.println(place);
+
 				}
 
 			}
 			pay = pay * updateperson;
-			pre.setInt(1, updatetripid);
-			pre.setInt(2, updateperson);
-			pre.setInt(3, pay);
-			pre.setString(4, place);
+			preupdateorder.setInt(1, updatetripid);
+			preupdateorder.setInt(2, updateperson);
+			preupdateorder.setInt(3, pay);
+			preupdateorder.setString(4, place);
 
-			pre.setInt(5, id);
+			preupdateorder.setInt(5, id);
 
-			int row = pre.executeUpdate();
+			int row = preupdateorder.executeUpdate();
 			if (row > 0) {
 				System.out.println("\t\t #############your order has been updated successfully#########");
 			} else {
 				System.out.println("\t\t !!!!!!!!!!!!!!!!there is no such !!!!!!!!!!!!!!!!!");
 			}
+		} catch (Exception e) {
+			System.out.println(e);
 		}
 	}
 

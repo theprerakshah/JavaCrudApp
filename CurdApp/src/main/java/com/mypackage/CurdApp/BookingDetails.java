@@ -1,11 +1,13 @@
 package com.mypackage.CurdApp;
 
-public class BookingDetails {
+public class BookingDetails
+{
 
-	private int BookingDetailsId;
-	private int BookingDetailsPerson;
+	private int	BookingDetailsId;
+	private int	BookingDetailsPerson;
 
-	public BookingDetails(int placeid, int person) {
+	public BookingDetails(int placeid, int person)
+	{
 		super();
 
 		BookingDetailsId = placeid;
@@ -13,19 +15,23 @@ public class BookingDetails {
 
 	}
 
-	public int getBookingDetailsId() {
+	public int getBookingDetailsId()
+	{
 		return BookingDetailsId;
 	}
 
-	public void setBookingDetailsId(int bookingDetailsId) {
+	public void setBookingDetailsId(int bookingDetailsId)
+	{
 		BookingDetailsId = bookingDetailsId;
 	}
 
-	public int getBookingDetailsPerson() {
+	public int getBookingDetailsPerson()
+	{
 		return BookingDetailsPerson;
 	}
 
-	public void setBookingDetailsPerson(int bookingDetailsPerson) {
+	public void setBookingDetailsPerson(int bookingDetailsPerson)
+	{
 		BookingDetailsPerson = bookingDetailsPerson;
 	}
 

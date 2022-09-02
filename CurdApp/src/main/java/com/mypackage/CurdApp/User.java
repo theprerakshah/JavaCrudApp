@@ -1,15 +1,16 @@
 package com.mypackage.CurdApp;
 
-public class User {
-	private int UserId;
-	private String UserName;
-	private String UserContact;
-	private String UserAddress;
-	private String UserEmail;
-	private String UserPassword;
-	
-	
-	public User(String userName, String userContact, String userAddress, String userEmail, String userPassword) {
+public class User
+{
+	private int		UserId;
+	private String	UserName;
+	private String	UserContact;
+	private String	UserAddress;
+	private String	UserEmail;
+	private String	UserPassword;
+
+	public User(String userName, String userContact, String userAddress, String userEmail, String userPassword)
+	{
 		super();
 		UserName = userName;
 		UserContact = userContact;
@@ -18,40 +19,63 @@ public class User {
 		UserPassword = userPassword;
 	}
 
-	public int getUserId() {
+	public int getUserId()
+	{
 		return UserId;
 	}
-	public void setUserId(int userId) {
+
+	public void setUserId(int userId)
+	{
 		UserId = userId;
 	}
-	public String getUserName() {
+
+	public String getUserName()
+	{
 		return UserName;
 	}
-	public void setUserName(String userName) {
+
+	public void setUserName(String userName)
+	{
 		UserName = userName;
 	}
-	public String getUserContact() {
+
+	public String getUserContact()
+	{
 		return UserContact;
 	}
-	public void setUserContact(String userContact) {
+
+	public void setUserContact(String userContact)
+	{
 		UserContact = userContact;
 	}
-	public String getUserAddress() {
+
+	public String getUserAddress()
+	{
 		return UserAddress;
 	}
-	public void setUserAddress(String userAddress) {
+
+	public void setUserAddress(String userAddress)
+	{
 		UserAddress = userAddress;
 	}
-	public String getUserEmail() {
+
+	public String getUserEmail()
+	{
 		return UserEmail;
 	}
-	public void setUserEmail(String userEmail) {
+
+	public void setUserEmail(String userEmail)
+	{
 		UserEmail = userEmail;
 	}
-	public String getUserPassword() {
+
+	public String getUserPassword()
+	{
 		return UserPassword;
 	}
-	public void setUserPassword(String userPassword) {
+
+	public void setUserPassword(String userPassword)
+	{
 		UserPassword = userPassword;
 	}
 
